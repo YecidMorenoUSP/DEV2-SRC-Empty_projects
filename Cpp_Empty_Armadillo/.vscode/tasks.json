@@ -1,0 +1,28 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build C++ (Multiple cpp files)",
+            "type": "shell",
+            "command": "x86_64-w64-mingw32-g++",
+			"args": [
+                    "-g",   "main.cpp",//"${fileBasename}", 
+                    "-o",   "\"${workspaceFolder}\\build\\main",
+
+                    "-I",   "\"${env:DEV2}\\LIB\\Armalillo\\include",
+                    "-L",   "\"${env:DEV2}\\LIB\\Armalillo\\lib",
+                    
+                    "-l",     "shell32",
+                    "-l",     "blas_win64_MT",
+                    "-l",     "lapack_win64_MT"
+                      
+
+                    ], 
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        }
+    ]
+}

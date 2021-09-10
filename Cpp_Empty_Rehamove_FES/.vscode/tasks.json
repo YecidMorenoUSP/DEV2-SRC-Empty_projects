@@ -1,0 +1,26 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build C++ (Multiple cpp files)",
+            "type": "shell",
+            "command": "x86_64-w64-mingw32-g++",
+			"args": [ //"-m32",
+					 //"x86_64-w64-mingw32-g++",
+                      "-g",     "test.cpp",//"${fileBasename}", 
+                      "-o",     "\"${workspaceFolder}\\build\\${fileBasenameNoExtension}\"",
+
+					  "-I",     "\"${env:DEV2}\\LIB\\RehaMove\\include",
+                      "-L",     "\"${env:DEV2}\\LIB\\RehaMove\\lib",
+                      
+					  "-l",     "libsmpt"
+
+                    ], 
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        }
+    ]
+}

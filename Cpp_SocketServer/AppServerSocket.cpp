@@ -14,6 +14,7 @@
 #include <iostream>
 #include <thread>
 
+#define SERVER_TCP_SEND_FIRST
 #define DEBUG_SERVER_TCP
 #define DEFAULT_BUFLEN 64
 

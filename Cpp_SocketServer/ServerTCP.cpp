@@ -89,6 +89,11 @@ int ServerTCP::acceptClient(){
             return 1;
     }
     closesocket(LOCAL.ListenSocket);
+    
+    #if defined(SERVER_TCP_SEND_FIRST)
+        send( LOCAL.ClientSocket, "OI\0\n", sizeof("OI\0\n"), 0 );
+    #endif
+
     return 0;
 }
 

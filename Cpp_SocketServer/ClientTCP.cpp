@@ -83,6 +83,11 @@ int ClientTCP::tryConnect(){
         return 1;
     }
     CLIENTE_TCP_DEBUG("\t\t\t\t[+] Sucesso!!!\n");
+
+    #if defined(CLIENT_TCP_SEND_FIRST)
+        send( LOCAL.ConnectSocket, "OI\0\n", sizeof("OI\0\n"), 0 );
+    #endif
+
     return 0;
 }
 

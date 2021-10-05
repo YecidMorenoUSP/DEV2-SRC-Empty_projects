@@ -1,9 +1,9 @@
 /*
-    Servidor TCP para propositos generales
+    Cliente TCP para propositos generales
 
     By Yecid Moreno : 2021
     git: https://github.com/YecidMorenoUSP
-    
+
     Baseado de:
         Ighor Augusto Barreto Candido -> https://pt.stackoverflow.com/users/11831/ighor-augusto
              https://pt.stackoverflow.com/questions/22719/cliente-servidor-windows-com-sockets-em-c
@@ -16,12 +16,13 @@
 */
 
 
-#if !defined(SERVERTCP_H)
-#define SERVERTCP_H
+#if !defined(CLIENTTCP_H)
+#define CLIENTTCP_H
 
-#if defined(DEBUG_SERVER_TCP)
+#if defined(DEBUG_CLIENT_TCP)
     #include <iostream>
 #endif
+
 
 
 
@@ -46,6 +47,15 @@
 #include <thread>
 
 #pragma comment (lib, "Ws2_32.lib")
+#pragma comment (lib, "Mswsock.lib")
+#pragma comment (lib, "AdvApi32.lib")
+
+
+void __CRTDECL CLIENTE_TCP_DEBUG(_In_z_ _Printf_format_string_ char const* const _Format,...){
+        #if defined(DEBUG_CLIENT_TCP)
+            printf(_Format);
+        #endif // DEBUG_CLIENT_TCP    
+}
 
 typedef struct {
     char recBuffer[DEFAULT_BUFLEN];
@@ -62,18 +72,20 @@ typedef struct {
 }SharedBuffer;
 
 
-class ServerTCP
+class ClientTCP
 {
     private:
+        PCSTR address;
         PCSTR port;
+        struct addrinfo *result = NULL;
+
 
     public:
 
         std::mutex mtx;
 
         struct {
-            SOCKET ListenSocket = INVALID_SOCKET;
-            SOCKET ClientSocket = INVALID_SOCKET;
+            SOCKET ConnectSocket = INVALID_SOCKET;
             
             char recvbuf[DEFAULT_BUFLEN];
             char sendbuf[DEFAULT_BUFLEN];
@@ -86,18 +98,18 @@ class ServerTCP
 
         }LOCAL;
 
-        ServerTCP(PCSTR port,SharedBuffer * app);
-        ServerTCP();
-        int initServer();
-        int acceptClient();
-        int closeServer();
-        void loopClient();
+        ClientTCP(PCSTR address,PCSTR port,SharedBuffer * app);
+        ClientTCP();
+        int initClient();
+        int tryConnect();
+        void loopServer();
         void waitJoin();
         void runLoop();
+        int closeClient();
         SharedBuffer *app;
 
 };
 
-#include "ServerTCP.cpp"
+#include "ClientTCP.cpp"
 
-#endif // SERVERTCP_H
+#endif // ClientTCP_H

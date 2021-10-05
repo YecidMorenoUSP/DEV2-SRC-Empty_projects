@@ -83,10 +83,11 @@ class ServerTCP
         }LOCAL;
 
         ServerTCP(PCSTR port,SharedBuffer * app);
+        ServerTCP();
         int initServer();
         int acceptClient();
         int closeServer();
-        int loopClient();
+        void loopClient();
         void waitJoin();
         void runLoop();
         SharedBuffer *app;

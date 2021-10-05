@@ -38,7 +38,6 @@ int main(void)
     SendFrameAnklebot sendFrameAnklebot;
     ZeroMemory(&sendFrameAnklebot,sizeof(SendFrameAnklebot));
     sprintf(sendFrameAnklebot.text,"Hola\n\0");     
-
     app.updateSendBuffer(sendFrameAnklebot.text,sizeof(sendFrameAnklebot.text));
 
     ServerTCP server("27015",&app);
@@ -66,8 +65,15 @@ int main(void)
         Sleep(200);
     }
     
-    if(server.closeServer()) return 1;
+    std::cout<<"\n\n[OK 1] END";
+    
+    if(server.closeServer()) {
+        std::cout<<"\n\n[OK 2] END";
+        return 1;
+    }
     server.waitJoin();
+
+    std::cout<<"\n\n[OK 3] END";
 
     return 0;
 }

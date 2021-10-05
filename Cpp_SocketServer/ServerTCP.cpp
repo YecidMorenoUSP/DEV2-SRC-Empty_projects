@@ -6,6 +6,10 @@ ServerTCP::ServerTCP(PCSTR port,SharedBuffer * app)
     this->app = app;
 }
 
+ServerTCP::ServerTCP()
+{
+}
+
 
 int ServerTCP::initServer(){
     
@@ -100,13 +104,13 @@ int ServerTCP::closeServer(){
     WSACleanup();
 
     #if defined(DEBUG_SERVER_TCP)
-        printf("\n>> Closed server",port);
+        printf("\n>> Closed server",this->port);
     #endif // DEBUG_SERVER_TCP
 
     return 0;
 }
 
-int ServerTCP::loopClient(){
+void ServerTCP::loopClient(){
     #if defined(DEBUG_SERVER_TCP)
         printf("\n>> LoopClient started");
     #endif // DEBUG_SERVER_TCP
@@ -114,38 +118,49 @@ int ServerTCP::loopClient(){
     int iSendResult;
         do {
         // mtx.lock();
+        
         iResult = recv(LOCAL.ClientSocket, LOCAL.recvbuf, LOCAL.recvbuflen, 0);
-        app->updateRecBuffer(LOCAL.recvbuf, iResult);
-        LOCAL.iResult = iResult;
+      
+        
         #if defined(DEBUG_SERVER_TCP)
                 printf("\n\t[+] size: %4d \t\t Data: %s ",iResult,LOCAL.recvbuf);
         #endif // DEBUG_SERVER_TCP
         // mtx.unlock();
         if (iResult > 0) {   
             // mtx.lock();
+            app->updateRecBuffer(LOCAL.recvbuf, iResult);
+            LOCAL.iResult = iResult;
             app->readSendBuffer(LOCAL.sendbuf,&LOCAL.sendbuflen);
             iSendResult = send( LOCAL.ClientSocket, LOCAL.sendbuf, LOCAL.sendbuflen, 0 );
             // mtx.unlock();
             if (iSendResult == SOCKET_ERROR) {
+                #if defined(DEBUG_SERVER_TCP)
+                    printf("\n>> SOCKET_ERROR SEND");
+                #endif // DEBUG_SERVER_TCP
                 closesocket(LOCAL.ClientSocket);
                 WSACleanup();
-                return 1;
+                return;
             }
         }
         else if (iResult == 0){
             #if defined(DEBUG_SERVER_TCP)
-                printf("\n>> Closed by client",port);
+                printf("\n>> Closed by client");
             #endif // DEBUG_SERVER_TCP
         }
         else  {
+            #if defined(DEBUG_SERVER_TCP)
+                printf("\n>> SOCKET_ERROR REC");
+            #endif // DEBUG_SERVER_TCP
             closesocket(LOCAL.ClientSocket);
             WSACleanup();
-            return 1;
+            return;
         }
 
     } while (iResult > 0);
-
-    return 0;
+    #if defined(DEBUG_SERVER_TCP)
+        printf("\n>> LoopClient finished");
+    #endif // DEBUG_SERVER_TCP
+    return;
 }
 
 void ServerTCP::waitJoin(){

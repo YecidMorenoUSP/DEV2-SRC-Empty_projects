@@ -118,7 +118,7 @@ void ClientTCP::loopServer(){
         }
     } while( iResult > 0 );
     
-    ClientTCP::closeClient();
+    // ClientTCP::closeClient();
 }
 
 void ClientTCP::waitJoin(){
@@ -160,31 +160,3 @@ int ClientTCP::closeClient(){
     WSACleanup();
     return 0;
 };
-
-void SharedBuffer::updateRecBuffer(char * _buffer, int len){
-    mtx.lock();
-    iResult = len;
-    ZeroMemory(recBuffer,DEFAULT_BUFLEN);
-    memcpy(&recBuffer,_buffer,len);
-    mtx.unlock();
-} 
-
-void SharedBuffer::readRecBuffer(char * _buffer, int * len){
-    mtx.lock();
-    *len = iResult;
-    memcpy(_buffer,&recBuffer,*len);
-    mtx.unlock();
-}   
-
-void SharedBuffer::updateSendBuffer(char * _buffer, int len){
-    mtx.lock();
-    ZeroMemory(sendBuffer,DEFAULT_BUFLEN);
-    memcpy(&sendBuffer,_buffer,len);
-    mtx.unlock();
-} 
-
-void SharedBuffer::readSendBuffer(char * _buffer, int * len){
-    mtx.lock();
-    memcpy(_buffer,&sendBuffer,*len);
-    mtx.unlock();
-}   

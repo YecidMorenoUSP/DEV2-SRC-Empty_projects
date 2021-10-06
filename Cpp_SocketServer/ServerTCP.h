@@ -45,21 +45,10 @@
 #include <mutex> 
 #include <thread>
 
+#include "utilsTCP.h"
+
+
 #pragma comment (lib, "Ws2_32.lib")
-
-typedef struct {
-    char recBuffer[DEFAULT_BUFLEN];
-    char sendBuffer[DEFAULT_BUFLEN];
-    int iResult = 0;
-    std::mutex mtx;
-
-    void updateRecBuffer(char * bufferRec, int len);
-    void readRecBuffer(char * bufferSend, int * len);
-
-    void updateSendBuffer(char * bufferRec, int len);
-    void readSendBuffer(char * bufferSend, int * len);
-
-}SharedBuffer;
 
 
 class ServerTCP

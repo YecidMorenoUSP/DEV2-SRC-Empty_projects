@@ -30,13 +30,6 @@
 
 #define WIN32_LEAN_AND_MEAN
 
-
-// size of buffer MAX
-#if !defined(DEFAULT_BUFLEN)
-#define DEFAULT_BUFLEN 512
-#endif 
-
-
 #include <windows.h> 
 #include <winsock2.h>
 #include <ws2tcpip.h>
@@ -45,6 +38,8 @@
 #include <stdio.h>
 #include <mutex> 
 #include <thread>
+
+#include "utilsTCP.h"
 
 #pragma comment (lib, "Ws2_32.lib")
 #pragma comment (lib, "Mswsock.lib")
@@ -57,19 +52,6 @@ void __CRTDECL CLIENTE_TCP_DEBUG(_In_z_ _Printf_format_string_ char const* const
         #endif // DEBUG_CLIENT_TCP    
 }
 
-typedef struct {
-    char recBuffer[DEFAULT_BUFLEN];
-    char sendBuffer[DEFAULT_BUFLEN];
-    int iResult = 0;
-    std::mutex mtx;
-
-    void updateRecBuffer(char * bufferRec, int len);
-    void readRecBuffer(char * bufferSend, int * len);
-
-    void updateSendBuffer(char * bufferRec, int len);
-    void readSendBuffer(char * bufferSend, int * len);
-
-}SharedBuffer;
 
 
 class ClientTCP

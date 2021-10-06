@@ -137,6 +137,9 @@ void ServerTCP::loopClient(){
             LOCAL.iResult = iResult;
             app->readSendBuffer(LOCAL.sendbuf,&LOCAL.sendbuflen);
             iSendResult = send( LOCAL.ClientSocket, LOCAL.sendbuf, LOCAL.sendbuflen, 0 );
+            #if defined(DEBUG_SERVER_TCP)
+                    printf(" >> %s",LOCAL.sendbuf);
+            #endif 
             // mtx.unlock();
             if (iSendResult == SOCKET_ERROR) {
                 #if defined(DEBUG_SERVER_TCP)
@@ -151,6 +154,8 @@ void ServerTCP::loopClient(){
             #if defined(DEBUG_SERVER_TCP)
                 printf("\n>> Closed by client");
             #endif // DEBUG_SERVER_TCP
+            closesocket(LOCAL.ClientSocket);
+            WSACleanup();
         }
         else  {
             #if defined(DEBUG_SERVER_TCP)
@@ -178,30 +183,3 @@ void ServerTCP::runLoop(){
 }
 
 
-void SharedBuffer::updateRecBuffer(char * _buffer, int len){
-    mtx.lock();
-    iResult = len;
-    ZeroMemory(recBuffer,DEFAULT_BUFLEN);
-    memcpy(&recBuffer,_buffer,len);
-    mtx.unlock();
-} 
-
-void SharedBuffer::readRecBuffer(char * _buffer, int * len){
-    mtx.lock();
-    *len = iResult;
-    memcpy(_buffer,&recBuffer,*len);
-    mtx.unlock();
-}   
-
-void SharedBuffer::updateSendBuffer(char * _buffer, int len){
-    mtx.lock();
-    ZeroMemory(sendBuffer,DEFAULT_BUFLEN);
-    memcpy(&sendBuffer,_buffer,len);
-    mtx.unlock();
-} 
-
-void SharedBuffer::readSendBuffer(char * _buffer, int * len){
-    mtx.lock();
-    memcpy(_buffer,&sendBuffer,*len);
-    mtx.unlock();
-}   
